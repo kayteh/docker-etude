@@ -19,6 +19,10 @@ class Model(ABC):
         for key, value in self.to_dict().items():
             if value:
                 dct[key] = value
+
+        if not dct:
+            return None
+
         return dct
 
     @abstractmethod
