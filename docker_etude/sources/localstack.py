@@ -31,9 +31,9 @@ class LocalStackAPI(Enum):
 class LocalStackSource(Source):
 
     def __init__(self,
-                 default_region="us-east-1",
+                 region="us-east-1",
                  apis=(LocalStackAPI.SNS, LocalStackAPI.SQS,)):
-        self.default_region = default_region
+        self.region = region
         self.apis = apis
 
     def iter_services(self, *args, **kwargs):
@@ -49,7 +49,7 @@ class LocalStackSource(Source):
             environment={
                 # NB: data dir is not used for all services; state may be lost on restart
                 "DATA_DIR": "/tmp/localstack/data",
-                "DEFAULT_REGION": self.default_region,
+                "DEFAULT_REGION": self.region,
                 "HOSTNAME": "localstack",
                 "SERVICES": ",".join(
                     sorted(

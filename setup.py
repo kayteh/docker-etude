@@ -17,6 +17,8 @@ setup(
     keywords="docker",
     install_requires=[
         "boto3>=1.4.6",
+        "click>=6.7",
+        "PyYAML>=3.12",
     ],
     setup_requires=[
         "nose>=1.3.7",
@@ -24,6 +26,9 @@ setup(
     dependency_links=[
     ],
     entry_points={
+        "console_scripts": [
+            "etude = docker_etude.main:etude",
+        ],
     },
     tests_require=[
         "coverage>=4.4.1",

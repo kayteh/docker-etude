@@ -3,6 +3,15 @@ A docker composition.
 
 """
 from collections import OrderedDict
+from yaml import dump, load
+from yaml.representer import SafeRepresenter
+try:
+    from yaml import CSafeDumper as SafeDumper, CSafeLoader as SafeLoader
+except ImportError:
+    from yaml import SafeDumper, SafeLoader
+finally:
+    # Register OrderedDict to dump like a regular dict
+    SafeRepresenter.add_representer(OrderedDict, SafeRepresenter.represent_dict)
 
 from docker_etude.models.base import Model
 from docker_etude.models.network import Network
@@ -65,3 +74,26 @@ class Composition(Model):
             )) if model_dct else None
             for name, model_dct in dct.items()
         }
+
+    def to_yaml(self):
+        """
+        Pretty print dump as YAML.
+
+        """
+        return dump(
+            self.to_safe_dict(),
+            # show every document in its own block
+            default_flow_style=False,
+            # start a new document (via "---") before every resource
+            explicit_start=True,
+            # follow (modern) PEP8 max line length and indent
+            width=99,
+            indent=4,
+            Dumper=SafeDumper,
+        )
+
+    @classmethod
+    def from_yaml(cls, data):
+        return cls.from_dict(
+            load(data, Loader=SafeLoader),
+        )
