@@ -21,7 +21,6 @@ etude ecs > docker-compose.yml
 
 # TODO:
 
- -  ECS
  -  Mutation: extension/transformation
  -  Module System (for sources, mutations)
  -  Environment editing abstraction
