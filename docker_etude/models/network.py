@@ -20,7 +20,7 @@ class Network(Model):
     def to_dict(self):
         return OrderedDict(
             driver=self.driver,
-            externa=self.external,
+            external=self.external,
         )
 
     @classmethod
