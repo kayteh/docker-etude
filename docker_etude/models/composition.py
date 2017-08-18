@@ -36,6 +36,15 @@ class Composition(Model):
         self.services = services or OrderedDict()
         self.volumes = volumes or OrderedDict()
 
+    def add_network(self, network):
+        self.networks[network.name] = network
+
+    def add_service(self, service):
+        self.services[service.name] = service
+
+    def add_volume(self, volume):
+        self.volumes[volume.name] = volume
+
     def to_dict(self):
         return OrderedDict(
             version=self.version,
