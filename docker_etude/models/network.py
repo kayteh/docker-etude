@@ -15,7 +15,7 @@ class Network(Model):
     def __init__(self, driver=None, external=None, name=None):
         self.driver = driver
         self.external = external
-        self.name = namea
+        self.name = name
 
     def to_dict(self):
         return OrderedDict(
