@@ -13,6 +13,7 @@ class Volume(Model):
 
     """
     def __init__(self, driver=None, name=None):
+        super().__init__()
         self.driver = driver
         self.name = name
 
