@@ -5,8 +5,13 @@ Common model behavior.
 from abc import ABC, abstractclassmethod, abstractmethod
 from collections import OrderedDict
 
+from docker_etude.models.options import Options
+
 
 class Model(ABC):
+
+    def __init__(self):
+        self.options = Options()
 
     def to_safe_dict(self):
         """

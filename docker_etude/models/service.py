@@ -36,6 +36,7 @@ class Service(Model):
         :param name: the service's name in the composition definition (strongly encouraged)
 
         """
+        super().__init__()
         self.name = name
         self.image = image
         self.command = command

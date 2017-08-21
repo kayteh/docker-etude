@@ -13,6 +13,7 @@ class Network(Model):
 
     """
     def __init__(self, driver=None, external=None, name=None):
+        super().__init__()
         self.driver = driver
         self.external = external
         self.name = name

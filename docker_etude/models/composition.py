@@ -31,6 +31,7 @@ class Composition(Model):
                  services=None,
                  version="3",
                  volumes=None):
+        super().__init__()
         self.version = version
         self.networks = networks or OrderedDict()
         self.services = services or OrderedDict()
