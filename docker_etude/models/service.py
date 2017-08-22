@@ -7,10 +7,20 @@ from collections import OrderedDict
 from docker_etude.models.base import Model
 
 
-class ServiceError():
+class ServiceError(Exception):
     def __init__(self, service, error_message):
         self.service = service
         self.error_message = error_message
+
+    @property
+    def normalized_message(self):
+        print(self.service.to_safe_dict())
+        print(self.service.name)
+        return dict(
+            service=self.service.name,
+            message=self.error_message,
+        )
+
 
 class Service(Model):
     """
