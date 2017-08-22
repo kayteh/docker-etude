@@ -36,7 +36,6 @@ class Composition(Model):
         self.networks = networks or OrderedDict()
         self.services = services or OrderedDict()
         self.volumes = volumes or OrderedDict()
-        self.errors = []
 
     def add_network(self, network):
         self.networks[network.name] = network
@@ -50,8 +49,16 @@ class Composition(Model):
     def add_volume(self, volume):
         self.volumes[volume.name] = volume
 
-    def add_error(self, service, error_message):
-        self.errors.append("{}: {}".format(service.name, error_message))
+    def iter_service_errors(self):
+        for service in self.services:
+            for error in service.errors:
+                yield error
+
+    @property
+    def errors(self):
+        return list(
+            error for error in self.iter_service_errors()
+        )
 
     def to_dict(self):
         return OrderedDict(

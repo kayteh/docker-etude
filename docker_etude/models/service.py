@@ -7,6 +7,11 @@ from collections import OrderedDict
 from docker_etude.models.base import Model
 
 
+class ServiceError():
+    def __init__(self, service, error_message):
+        self.service = service
+        self.error_message = error_message
+
 class Service(Model):
     """
     A single docker compose service.
@@ -49,10 +54,15 @@ class Service(Model):
         self.ports = ports or []
         self.ulimits = ulimits or {}
         self.volumes = volumes or []
-        self.errors = []
+        self._errors = []
+
+    @property
+    def errors(self):
+        return self._errors
 
     def add_error(self, error_message):
-        self.errors.append(error_message)
+        error = ServiceError(self, error_message)
+        self._errors.append(error)
 
     def to_dict(self):
         return OrderedDict(
