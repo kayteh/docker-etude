@@ -1,0 +1,8 @@
+{
+  "service1": {
+    "file": "nginx/frontend/configs/common.json"
+  },
+  "service2": {
+    "file": "nginx/frontend/configs/common2.json"
+  }
+}

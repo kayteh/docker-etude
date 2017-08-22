@@ -53,9 +53,6 @@ class Composition(Model):
     def add_error(self, service, error_message):
         self.errors.append("{}: {}".format(service.name, error_message))
 
-    def has_errors(self):
-        return len(self.errors) > 0
-
     def to_dict(self):
         return OrderedDict(
             version=self.version,
