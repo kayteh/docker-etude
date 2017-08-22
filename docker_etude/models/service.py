@@ -49,6 +49,13 @@ class Service(Model):
         self.ports = ports or []
         self.ulimits = ulimits or {}
         self.volumes = volumes or []
+        self.errors = []
+
+    def add_error(self, error_message):
+        self.errors.append(error_message)
+
+    def has_errors(self):
+        return len(self.errors) > 0
 
     def to_dict(self):
         return OrderedDict(

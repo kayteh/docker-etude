@@ -44,6 +44,9 @@ class Composition(Model):
     def add_service(self, service):
         self.services[service.name] = service
 
+        for error_message in service.errors:
+            self.add_error(error_message)
+
     def add_volume(self, volume):
         self.volumes[volume.name] = volume
 
@@ -51,7 +54,7 @@ class Composition(Model):
         self.errors.append("{}: {}".format(service.name, error_message))
 
     def has_errors(self):
-        return len(self.errors) != 0
+        return len(self.errors) > 0
 
     def to_dict(self):
         return OrderedDict(
