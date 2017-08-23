@@ -1,8 +1,12 @@
 {
   "service1": {
-    "file": "nginx/frontend/configs/common.json"
+    "file": {
+      "path": "nginx/frontend/configs/common.json"
+    }
   },
   "service2": {
-    "file": "nginx/frontend/configs/common2.json"
+    "file": {
+      "path": "nginx/frontend/configs/common.json"
+    }
   }
 }

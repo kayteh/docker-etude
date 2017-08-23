@@ -9,18 +9,17 @@ from docker_etude.models.validation import FileExistValidation
 
 def test_validation_file_exists():
     filename = "docker_etude/tests/fixtures/validations.json"
-    validation = FileExistValidation(filename)
+    validation = FileExistValidation(filepath=filename)
 
     assert_that(
-        validation.is_valid(),
+        validation.validate(),
         is_(equal_to(True)),
     )
 
 def test_validation_file_does_not_exist():
     filename = "docker_etude/tests/fixtures/validations2.json"
-    validation = FileExistValidation(filename)
-
+    validation = FileExistValidation(filepath=filename)
     assert_that(
-        validation.is_valid(),
+        validation.validate(),
         is_(equal_to(False)),
     )
