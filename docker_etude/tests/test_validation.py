@@ -3,6 +3,7 @@ Test volume encoding.
 
 """
 from hamcrest import assert_that, equal_to, is_, instance_of
+from os import environ
 
 from docker_etude.models.validation import FileExistValidation, Validation, EmptyValidation
 
@@ -51,3 +52,27 @@ def test_empty_validation_from_dict():
         validation,
         is_(instance_of(EmptyValidation)),
     )
+
+def test_envvar_validation():
+    v = dict(
+        name="env",
+        var="SOMETHING",
+    )
+    validation = Validation.from_dict(v)
+    assert_that(
+        validation.validate(),
+        is_(equal_to(False)),
+    )
+
+def test_envvar_validation_exists():
+    environ["SOMETHING"] = "SOME_VALUE"
+    v = dict(
+        name="env",
+        var="SOMETHING",
+    )
+    validation = Validation.from_dict(v)
+    assert_that(
+        validation.validate(),
+        is_(equal_to(True)),
+    )
+    environ["SOMETHING"] = ""

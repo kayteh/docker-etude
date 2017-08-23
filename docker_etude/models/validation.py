@@ -6,10 +6,12 @@ before being added to the composition.
 These validations will support multiple items, currently implemented is "file"
 
 """
-
 from abc import ABC, abstractclassmethod, abstractmethod
-from docker_etude.models.base import Model
+from os import getenv
 from pathlib import Path
+
+from docker_etude.models.base import Model
+
 
 class Validation(ABC):
     def __init__(self, **kwargs):
@@ -19,6 +21,7 @@ class Validation(ABC):
     def all_validations(self):
         return [
             FileExistValidation,
+            EnvVarExistValidation,
             EmptyValidation,
         ]
 
@@ -61,6 +64,19 @@ class Validation(ABC):
             return matching[0]
 
         return EmptyValidation
+
+
+class EnvVarExistValidation(Validation):
+    @classmethod
+    def name(cls):
+        return "env"
+
+    def __init__(self, **kwargs):
+        self.envvar = kwargs.get("var")
+
+    def validate(self):
+        value = getenv(self.envvar)
+        return bool(value)
 
 
 class FileExistValidation(Validation):
