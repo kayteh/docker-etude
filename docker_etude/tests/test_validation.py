@@ -3,9 +3,11 @@ Test volume encoding.
 
 """
 from hamcrest import assert_that, equal_to, is_, instance_of
+from json import loads
 from os import environ
 
-from docker_etude.models.validation import FileExistValidation, Validation, EmptyValidation
+from docker_etude.models.validation import FileExistValidation, BaseValidation, EmptyValidation, ServiceValidation, Validations
+from docker_etude.models import Service
 
 
 def test_validation_file_exists():
@@ -32,7 +34,7 @@ def test_validation_from_dict():
         filepath=filename,
         some="other_string",
     )
-    validation = Validation.from_dict(v)
+    validation = BaseValidation.from_dict(v)
 
     assert_that(
         validation,
@@ -46,7 +48,7 @@ def test_empty_validation_from_dict():
         filepath=filename,
         some="other_string",
     )
-    validation = Validation.from_dict(v)
+    validation = BaseValidation.from_dict(v)
 
     assert_that(
         validation,
@@ -58,7 +60,7 @@ def test_envvar_validation():
         name="env",
         var="SOMETHING",
     )
-    validation = Validation.from_dict(v)
+    validation = BaseValidation.from_dict(v)
     assert_that(
         validation.validate(),
         is_(equal_to(False)),
@@ -70,9 +72,46 @@ def test_envvar_validation_exists():
         name="env",
         var="SOMETHING",
     )
-    validation = Validation.from_dict(v)
+    validation = BaseValidation.from_dict(v)
     assert_that(
         validation.validate(),
         is_(equal_to(True)),
     )
     environ["SOMETHING"] = ""
+
+def test_service_validations_internal_length():
+    json_data = open("docker_etude/tests/fixtures/validations.json").read()
+    dct = loads(json_data)
+    service_validations = Validations.from_dict(dct)
+    assert_that(
+        len(service_validations.validations),
+        is_(equal_to(3)),
+    )
+
+def test_service_validations_for_service():
+    service = Service.from_dict(dict(
+        image="nginx",
+        name="service1",
+    ))
+    json_data = open("docker_etude/tests/fixtures/validations.json").read()
+    dct = loads(json_data)
+    service_validations = Validations.from_dict(dct)
+    assert_that(
+        service_validations.validate(service),
+        is_(equal_to(True)),
+    )
+
+    print(service.errors)
+
+def test_service_validations_for_service_fails():
+    service = Service.from_dict(dict(
+        image="nginx",
+        name="service2",
+    ))
+    json_data = open("docker_etude/tests/fixtures/validations.json").read()
+    dct = loads(json_data)
+    service_validations = Validations.from_dict(dct)
+    assert_that(
+        service_validations.validate(service),
+        is_(equal_to(False)),
+    )

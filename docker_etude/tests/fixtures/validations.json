@@ -1,12 +1,20 @@
 {
-  "service1": {
-    "file": {
-      "path": "nginx/frontend/configs/common.json"
+  "service1": [
+    {
+      "name": "file",
+      "filepath": "docker_etude/tests/fixtures/validations.json"
     }
-  },
-  "service2": {
-    "file": {
-      "path": "nginx/frontend/configs/common.json"
+  ],
+  "service2": [
+    {
+      "name": "file",
+      "filepath": "nginx/frontend/configs/common.json"
     }
-  }
+  ],
+  "service3": [
+    {
+      "name": "file",
+      "filepath": "nginx/frontend/configs/common.json"
+    }
+  ]
 }

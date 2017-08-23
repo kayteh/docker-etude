@@ -13,7 +13,7 @@ from pathlib import Path
 from docker_etude.models.base import Model
 
 
-class Validation(ABC):
+class BaseValidation(ABC):
     def __init__(self, **kwargs):
         pass
 
@@ -42,7 +42,7 @@ class Validation(ABC):
 
     @classmethod
     def iter_matching_validations(self, name):
-        for validation in Validation.all_validations():
+        for validation in BaseValidation.all_validations():
             if validation.name() == name:
                  yield validation
 
@@ -58,7 +58,7 @@ class Validation(ABC):
         :returns: list of validations that match the name
 
         """
-        matching = list(Validation.iter_matching_validations(name))
+        matching = list(BaseValidation.iter_matching_validations(name))
 
         if matching:
             return matching[0]
@@ -66,7 +66,7 @@ class Validation(ABC):
         return EmptyValidation
 
 
-class EnvVarExistValidation(Validation):
+class EnvVarExistValidation(BaseValidation):
     @classmethod
     def name(cls):
         return "env"
@@ -79,12 +79,13 @@ class EnvVarExistValidation(Validation):
         return bool(value)
 
 
-class FileExistValidation(Validation):
+class FileExistValidation(BaseValidation):
     @classmethod
     def name(cls):
         return "file"
 
     def __init__(self, **kwargs):
+        print(kwargs)
         self.filepath = kwargs.get("filepath")
 
     def validate(self):
@@ -92,10 +93,54 @@ class FileExistValidation(Validation):
         return valid_file.is_file()
 
 
-class EmptyValidation(Validation):
+class EmptyValidation(BaseValidation):
     @classmethod
     def name(cls):
         return "empty"
 
-    def validate(self, arg1):
-        return True
+    def validate(self):
+        return False
+
+
+class Validations(ABC):
+    def __init__(self, validations=[]):
+        self.validations = validations
+
+    def validate(self, service):
+        passing = True
+        validations = list(filter(lambda x: x.service == service.name, self.validations))
+
+        # TODO: Refactor this before merging
+        validations = validations[0].validations
+
+        for validation in validations:
+            if not validation.validate():
+                passing = False
+                service.add_error("Failed to pass validation")
+
+        return passing
+
+    @classmethod
+    def from_dict(cls, dct):
+        validations = []
+
+        for key in dct.keys():
+            sv = ServiceValidation(
+                service=key,
+                validations=list(
+                    BaseValidation.from_dict(v)
+                    for v in dct[key]
+                )
+            )
+
+            validations.append(sv)
+
+        return cls(
+            validations=validations,
+        )
+
+class ServiceValidation(ABC):
+    def __init__(self, service=None, validations=[]):
+        self.service = service
+        self.validations = validations
+
